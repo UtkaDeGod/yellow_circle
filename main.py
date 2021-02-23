@@ -1,16 +1,16 @@
 import sys
 
-from PyQt5 import uic
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from random import randint as rdt
+from random import randint, choices
+from template import Ui_MainWindow
 
 
-class Example(QMainWindow):
+class Example(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('template.ui', self)
+        self.setupUi(self)
         self.setWindowTitle('Рисование')
         self.draw_flag = False
         self.circle_lst = []
@@ -28,13 +28,17 @@ class Example(QMainWindow):
             qp.end()
 
     def draw_circle(self, qp):
-        center = QPoint(rdt(70, 630), rdt(70, 530))
-        r = rdt(15, 70)
-        qp.setBrush(QColor('yellow'))
-        self.circle_lst.append((center, r))
-        for center, r in self.circle_lst:
-            qp.drawEllipse(center, r, r)
-        self.draw_flag = False
+        try:
+            center = QPoint(randint(70, 630), randint(70, 530))
+            r = randint(15, 70)
+            color = QColor(*choices(range(256), k=3))
+            self.circle_lst.append((center, r, color))
+            for center, r, color in self.circle_lst:
+                qp.setBrush(color)
+                qp.drawEllipse(center, r, r)
+            self.draw_flag = False
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':
